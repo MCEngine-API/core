@@ -3,6 +3,7 @@ package io.github.mcengine.api.mcengine.util;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
