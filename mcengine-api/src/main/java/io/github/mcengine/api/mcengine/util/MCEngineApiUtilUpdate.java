@@ -1,4 +1,4 @@
-package io.github.mcengine.api.artificialintelligence.util;
+package io.github.mcengine.api.mcengine.util;
 
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
