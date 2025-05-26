@@ -135,16 +135,24 @@ public class MCEngineApiUtilUpdate {
      */
     @SuppressWarnings("unused")
     private static boolean isUpdateAvailable(String currentVersion, String latestVersion) {
-        String[] lv = latestVersion.split("\\.");
-        String[] cv = currentVersion.split("\\.");
+        // Remove suffix like -SNAPSHOT for numeric comparison
+        String currentNumeric = currentVersion.split("-")[0];
+        String latestNumeric = latestVersion.split("-")[0];
 
-        boolean changed = lv.length != cv.length;
-        changed = changed || !lv[0].equals(cv[0]); // Major
-        if (!changed && lv.length > 1 && cv.length > 1)
-            changed = changed || !lv[1].equals(cv[1]); // Minor
-        if (!changed && lv.length > 2 && cv.length > 2)
-            changed = changed || !lv[2].equals(cv[2]); // Patch
+        String[] currentParts = currentNumeric.split("\\.");
+        String[] latestParts = latestNumeric.split("\\.");
 
-        return changed;
+        int length = Math.max(currentParts.length, latestParts.length);
+
+        for (int i = 0; i < length; i++) {
+            int c = i < currentParts.length ? Integer.parseInt(currentParts[i]) : 0;
+            int l = i < latestParts.length ? Integer.parseInt(latestParts[i]) : 0;
+
+            if (l > c) return true;
+            if (l < c) return false;
+        }
+
+        // If numeric parts are equal, compare full version including suffix (e.g., -SNAPSHOT)
+        return !currentVersion.equals(latestVersion);
     }
 }
