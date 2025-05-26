@@ -7,6 +7,9 @@ import org.bukkit.command.CommandSender;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A registry to dynamically register subcommands under root commands like /ai.
+ */
 public class CommandRegistry implements CommandExecutor {
 
     private static final Map<String, Map<String, SubCommand>> commandMap = new HashMap<>();
@@ -23,32 +26,22 @@ public class CommandRegistry implements CommandExecutor {
         }
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        String root = label.toLowerCase(); // e.g., "ai", "task", "report"
-        Map<String, SubCommand> subCommands = commandMap.get(root);
-
-        if (subCommands == null) {
-            sender.sendMessage("§cNo handlers registered for /" + root);
-            return true;
-        }
-
-        if (args.length == 0) {
-            sender.sendMessage("§cUsage: /" + root + " <subcommand>");
-            return true;
-        }
+    public static boolean execute(String root, CommandSender sender, String[] args) {
+        Map<String, SubCommand> subCommands = commandMap.get(root.toLowerCase());
+        if (subCommands == null || args.length == 0) return false;
 
         String sub = args[0].toLowerCase();
         SubCommand subCommand = subCommands.get(sub);
+        if (subCommand == null) return false;
 
-        if (subCommand != null) {
-            String[] subArgs = new String[args.length - 1];
-            System.arraycopy(args, 1, subArgs, 0, subArgs.length);
-            return subCommand.execute(sender, subArgs);
-        }
+        String[] subArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, subArgs, 0, subArgs.length);
+        return subCommand.execute(sender, subArgs);
+    }
 
-        sender.sendMessage("§cUnknown subcommand: " + sub);
-        return true;
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        return execute(label.toLowerCase(), sender, args);
     }
 
     public interface SubCommand {
