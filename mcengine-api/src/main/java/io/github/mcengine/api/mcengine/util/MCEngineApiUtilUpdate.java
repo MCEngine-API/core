@@ -135,24 +135,37 @@ public class MCEngineApiUtilUpdate {
      */
     @SuppressWarnings("unused")
     private static boolean isUpdateAvailable(String currentVersion, String latestVersion) {
-        // Remove suffix like -SNAPSHOT for numeric comparison
-        String currentNumeric = currentVersion.split("-")[0];
-        String latestNumeric = latestVersion.split("-")[0];
+        String[] currentSplit = currentVersion.split("-");
+        String[] latestSplit = latestVersion.split("-");
 
-        String[] currentParts = currentNumeric.split("\\.");
-        String[] latestParts = latestNumeric.split("\\.");
+        String[] currentMain = currentSplit[0].split("\\.");
+        String[] latestMain = latestSplit[0].split("\\.");
 
-        int length = Math.max(currentParts.length, latestParts.length);
-
+        int length = Math.max(currentMain.length, latestMain.length);
         for (int i = 0; i < length; i++) {
-            int c = i < currentParts.length ? Integer.parseInt(currentParts[i]) : 0;
-            int l = i < latestParts.length ? Integer.parseInt(latestParts[i]) : 0;
+            int current = i < currentMain.length ? Integer.parseInt(currentMain[i]) : 0;
+            int latest = i < latestMain.length ? Integer.parseInt(latestMain[i]) : 0;
 
-            if (l > c) return true;
-            if (l < c) return false;
+            if (latest > current) return true;
+            if (latest < current) return false;
         }
 
-        // If numeric parts are equal, compare full version including suffix (e.g., -SNAPSHOT)
-        return !currentVersion.equals(latestVersion);
+        // Compare suffix numerically if possible
+        if (currentSplit.length > 1 || latestSplit.length > 1) {
+            String currentSuffix = currentSplit.length > 1 ? currentSplit[1].replaceAll("[^0-9]", "") : "0";
+            String latestSuffix = latestSplit.length > 1 ? latestSplit[1].replaceAll("[^0-9]", "") : "0";
+
+            try {
+                int currentNum = Integer.parseInt(currentSuffix);
+                int latestNum = Integer.parseInt(latestSuffix);
+                return latestNum > currentNum;
+            } catch (NumberFormatException e) {
+                // Fallback to lexicographic comparison if numeric fails
+                return !currentVersion.equals(latestVersion) && latestVersion.compareTo(currentVersion) > 0;
+            }
+        }
+
+        // Versions are exactly equal
+        return false;
     }
 }
