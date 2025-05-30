@@ -1,4 +1,7 @@
-[`GitHub.dev`](https://mcengine.github.io/mcengine-website/codespaces/github/dev)
+# 💻 Dev Codespaces
+
+[`🔗 GitHub.dev`](https://mcengine.github.io/mcengine-website/codespaces/github/dev)
+[`⚙️ GitHub Codespaces`](https://github.com/codespaces/new?repo=MCEngine/mcengine-api)
 [`🐳 Open in Dev Container (VS Code Desktop)`](https://mcengine.github.io/mcengine-website/codespaces/devcontainer/volume/localhost)
 
 # 🚀 MCEngine API
