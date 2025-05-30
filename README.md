@@ -1,3 +1,6 @@
+[`GitHub.dev`](https://github.dev/MCEngine/mcengine-api)
+[`Open in Dev Container (VS Code Desktop)`](vscode://vscode-remote/dev-container+https%3A%2F%2Fgithub.com%2FMCEngine%2Fmcengine-api)
+
 # 🚀 MCEngine API
 
 This repository serves as the central API for MCEngine projects.
