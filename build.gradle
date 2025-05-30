@@ -79,10 +79,7 @@ subprojects {
                     url = uri("https://maven.pkg.github.com/${project.git_organization_name}/${project.git_repository_name}")
                     credentials {
                         username = project.git_user_name
-                        password = project.git_user_token
-                                ?: project.git_repository_token
-                                ?: project.git_organization_token
-                                ?: project.github_user_token
+                        password = project.github_user_token
                     }
                 }
             }
