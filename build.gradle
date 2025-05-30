@@ -12,6 +12,9 @@ ext {
     git_user_name = System.getenv('GIT_USER_NAME') ?: 'null'
     git_user_token = System.getenv('GIT_USER_TOKEN') ?: 'null'
 
+    // GitHub
+    github_user_token = System.getenv('GITHUB_USER_TOKEN') ?: ''
+
     // Organization
     git_organization_name = System.getenv('GIT_ORGANIZATION_NAME') ?: 'MCEngine'
     git_organization_token = System.getenv('GIT_ORGANIZATION_TOKEN') ?: 'null'
@@ -79,6 +82,7 @@ subprojects {
                         password = project.git_user_token
                                 ?: project.git_repository_token
                                 ?: project.git_organization_token
+                                ?: project.github_user_token
                     }
                 }
             }
