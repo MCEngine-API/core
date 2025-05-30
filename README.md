@@ -1,5 +1,5 @@
-[`GitHub.dev`](https://github.dev/MCEngine/mcengine-api)
-[`🐳 Open in Dev Container (VS Code Desktop)`](vscode://vscode-remote/dev-container+https://github.com/MCEngine/mcengine-api)
+[`GitHub.dev`](https://mcengine.github.io/mcengine-website/codespaces/github/dev)
+[`🐳 Open in Dev Container (VS Code Desktop)`](https://mcengine.github.io/mcengine-website/codespaces/devcontainer/volume/localhost)
 
 # 🚀 MCEngine API
 
