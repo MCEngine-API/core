@@ -112,11 +112,11 @@ public class MCEngineApiUtilUpdate {
 
                 if (changed) {
                     List<String> updateMessages = new ArrayList<>();
-                    updateMessages.add("§9[MCEngineArtificialIntelligence]§r §6A new update is available!");
-                    updateMessages.add("§9[MCEngineArtificialIntelligence]§r Current version: §e" + version + " §r>> Latest: §a" + latestVersion);
-                    updateMessages.add("§9[MCEngineArtificialIntelligence]§r Download: §b" + downloadUrl);
+                    updateMessages.add("§6A new update is available!");
+                    updateMessages.add("Current version: §e" + version + " §r>> Latest: §a" + latestVersion);
+                    updateMessages.add("Download: §b" + downloadUrl);
 
-                    updateMessages.forEach(msg -> Bukkit.getConsoleSender().sendMessage(msg));
+                    updateMessages.forEach(msg -> plugin.getLogger().info(msg));
                 } else {
                     logger.info("No updates found. You are running the latest version.");
                 }
