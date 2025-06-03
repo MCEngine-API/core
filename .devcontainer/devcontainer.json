@@ -22,12 +22,5 @@
       ]
     }
   },
-  "postCreateCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\"",
-  "remoteEnv": {
-    "GIT_USER_NAME": "${localEnv:GIT_USER_NAME}",
-    "GIT_USER_EMAIL": "${localEnv:GIT_USER_EMAIL}",
-    "GIT_USER_TOKEN": "${localEnv:GIT_USER_TOKEN}",
-    "GITHUB_USER_TOKEN": "${localEnv:GITHUB_USER_TOKEN}"
-  },
   "workspaceFolder": "/workspace"
 }
