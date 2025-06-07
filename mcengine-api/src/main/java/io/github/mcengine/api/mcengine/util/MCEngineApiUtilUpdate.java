@@ -113,8 +113,8 @@ public class MCEngineApiUtilUpdate {
                 if (changed) {
                     List<String> updateMessages = new ArrayList<>();
                     updateMessages.add("§6A new update is available!");
-                    updateMessages.add("Current version: §e" + version + " §r>> Latest: §a" + latestVersion);
-                    updateMessages.add("Download: §b" + downloadUrl);
+                    updateMessages.add("Current version: " + version + " >> Latest: " + latestVersion);
+                    updateMessages.add("Download: " + downloadUrl);
 
                     updateMessages.forEach(msg -> plugin.getLogger().info(msg));
                 } else {
