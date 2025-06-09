@@ -19,9 +19,10 @@ public class MCEngineApiUtilUpdate {
 
     /**
      * Checks for plugin updates from GitHub or GitLab asynchronously and logs results.
+     * Used by core plugins.
      *
      * @param plugin      The plugin instance.
-     * @param logger      A dynamic logger instance (can be plugin.getLogger() or a custom one).
+     * @param logger      The logger instance to log messages.
      * @param gitPlatform The git platform ("github" or "gitlab").
      * @param org         The organization or user name.
      * @param repository  The repository name.
@@ -29,61 +30,50 @@ public class MCEngineApiUtilUpdate {
      */
     public static void checkUpdate(Plugin plugin, Logger logger,
                                    String gitPlatform, String org, String repository, String token) {
+        checkUpdate(plugin, logger, "", gitPlatform, org, repository, token);
+    }
+
+    /**
+     * Checks for plugin updates from GitHub or GitLab asynchronously and logs results with a prefixed format.
+     * Used by AddOns or DLCs to customize log format.
+     *
+     * @param plugin      The plugin instance.
+     * @param logger      The logger instance to log messages.
+     * @param prefix      A prefix string to prepend to all log messages.
+     * @param gitPlatform The git platform ("github" or "gitlab").
+     * @param org         The organization or user name.
+     * @param repository  The repository name.
+     * @param token       The API authentication token (can be null or "null" if not used).
+     */
+    public static void checkUpdate(Plugin plugin, Logger logger, String prefix,
+                                   String gitPlatform, String org, String repository, String token) {
         switch (gitPlatform.toLowerCase()) {
             case "github":
-                checkUpdateGitHub(plugin, logger, org, repository, token);
+                checkUpdateGitHub(plugin, logger, prefix, org, repository, token);
                 break;
             case "gitlab":
-                checkUpdateGitLab(plugin, logger, org, repository, token);
+                checkUpdateGitLab(plugin, logger, prefix, org, repository, token);
                 break;
             default:
-                logger.warning("Unknown platform: " + gitPlatform);
+                logger.warning(prefix + "Unknown platform: " + gitPlatform);
         }
     }
 
-    /**
-     * Initiates update check for GitHub repository asynchronously.
-     *
-     * @param plugin      The plugin instance.
-     * @param logger      Logger to output update information.
-     * @param org         GitHub organization or username.
-     * @param repository  GitHub repository name.
-     * @param githubToken GitHub API token (optional).
-     */
-    private static void checkUpdateGitHub(Plugin plugin, Logger logger, String org, String repository, String githubToken) {
+    private static void checkUpdateGitHub(Plugin plugin, Logger logger, String prefix,
+                                          String org, String repository, String githubToken) {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", org, repository);
         String downloadUrl = String.format("https://github.com/%s/%s/releases", org, repository);
-        fetchAndCompareUpdate(plugin, logger, apiUrl, downloadUrl, githubToken, "application/vnd.github.v3+json", false);
+        fetchAndCompareUpdate(plugin, logger, prefix, apiUrl, downloadUrl, githubToken, "application/vnd.github.v3+json", false);
     }
 
-    /**
-     * Initiates update check for GitLab repository asynchronously.
-     *
-     * @param plugin      The plugin instance.
-     * @param logger      Logger to output update information.
-     * @param org         GitLab group or username.
-     * @param repository  GitLab repository name.
-     * @param gitlabToken GitLab API token (optional).
-     */
-    private static void checkUpdateGitLab(Plugin plugin, Logger logger, String org, String repository, String gitlabToken) {
+    private static void checkUpdateGitLab(Plugin plugin, Logger logger, String prefix,
+                                          String org, String repository, String gitlabToken) {
         String apiUrl = String.format("https://gitlab.com/api/v4/projects/%s%%2F%s/releases", org, repository);
         String downloadUrl = String.format("https://gitlab.com/%s/%s/-/releases", org, repository);
-        fetchAndCompareUpdate(plugin, logger, apiUrl, downloadUrl, gitlabToken, "application/json", true);
+        fetchAndCompareUpdate(plugin, logger, prefix, apiUrl, downloadUrl, gitlabToken, "application/json", true);
     }
 
-    /**
-     * Fetches the latest release from the API asynchronously and compares it with the current plugin version.
-     * Logs update information using the provided logger.
-     *
-     * @param plugin       The plugin instance.
-     * @param logger       Logger to log update details.
-     * @param apiUrl       The API endpoint URL.
-     * @param downloadUrl  The URL to the release download page.
-     * @param token        API token (optional).
-     * @param acceptHeader The Accept header for the request.
-     * @param jsonArray    Whether the API response is a JSON array (true for GitLab).
-     */
-    private static void fetchAndCompareUpdate(Plugin plugin, Logger logger,
+    private static void fetchAndCompareUpdate(Plugin plugin, Logger logger, String prefix,
                                               String apiUrl, String downloadUrl,
                                               String token, String acceptHeader, boolean jsonArray) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -108,7 +98,7 @@ public class MCEngineApiUtilUpdate {
                 }
 
                 if (latestVersion == null) {
-                    logger.warning("[UpdateCheck] Could not find release tag from API: " + apiUrl);
+                    logger.warning(prefix + "[UpdateCheck] Could not find release tag from API: " + apiUrl);
                     return;
                 }
 
@@ -116,15 +106,15 @@ public class MCEngineApiUtilUpdate {
                 boolean changed = isUpdateAvailable(version, latestVersion);
 
                 if (changed) {
-                    logger.info("§6A new update is available!");
-                    logger.info("Current version: " + version + " >> Latest: " + latestVersion);
-                    logger.info("Download: " + downloadUrl);
+                    logger.info(prefix + "§6A new update is available!");
+                    logger.info(prefix + "Current version: " + version + " >> Latest: " + latestVersion);
+                    logger.info(prefix + "Download: " + downloadUrl);
                 } else {
-                    logger.info("No updates found. You are running the latest version.");
+                    logger.info(prefix + "No updates found. You are running the latest version.");
                 }
 
             } catch (Exception ex) {
-                logger.warning("[UpdateCheck] [" + (apiUrl.contains("github") ? "GitHub" : "GitLab") + "] Could not check updates: " + ex.getMessage());
+                logger.warning(prefix + "[UpdateCheck] [" + (apiUrl.contains("github") ? "GitHub" : "GitLab") + "] Could not check updates: " + ex.getMessage());
             }
         });
     }
