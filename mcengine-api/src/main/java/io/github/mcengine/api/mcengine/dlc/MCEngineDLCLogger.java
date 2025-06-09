@@ -49,4 +49,14 @@ public class MCEngineDLCLogger {
     public void severe(String message) {
         logger.severe("[DLC] [" + dlcName + "] " + message);
     }
+
+    /**
+     * Returns the raw logger (without prefix formatting).
+     * Useful for APIs that accept java.util.logging.Logger directly.
+     *
+     * @return the underlying Logger
+     */
+    public Logger getLogger() {
+        return logger;
+    }
 }

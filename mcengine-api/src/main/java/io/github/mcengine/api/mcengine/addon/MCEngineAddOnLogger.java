@@ -15,8 +15,8 @@ public class MCEngineAddOnLogger {
     /**
      * Constructs a new AddOn logger for the specified plugin and AddOn name.
      *
-     * @param plugin     The plugin instance to retrieve the logger from.
-     * @param addOnName  The name of the AddOn to include in log messages.
+     * @param plugin    The plugin instance to retrieve the logger from.
+     * @param addOnName The name of the AddOn to include in log messages.
      */
     public MCEngineAddOnLogger(Plugin plugin, String addOnName) {
         this.logger = plugin.getLogger();
@@ -48,5 +48,15 @@ public class MCEngineAddOnLogger {
      */
     public void severe(String message) {
         logger.severe("[AddOn] [" + addOnName + "] " + message);
+    }
+
+    /**
+     * Returns the raw logger (without prefix formatting).
+     * Useful for APIs that accept java.util.logging.Logger directly.
+     *
+     * @return the underlying Logger
+     */
+    public Logger getLogger() {
+        return logger;
     }
 }
