@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Central API class for MCEngine to provide simplified access to
@@ -61,14 +62,16 @@ public class MCEngineApi {
 
     /**
      * Checks for plugin updates from GitHub or GitLab by fetching the latest release tag.
+     * Logs update information using the provided logger.
      *
      * @param plugin      the plugin instance
+     * @param logger      the logger instance to log messages
      * @param gitPlatform the platform to use: "github" or "gitlab"
      * @param org         the GitHub org or GitLab group/namespace
      * @param repository  the repository name
      * @param token       optional GitHub/GitLab token (can be null or "null")
      */
-    public static void checkUpdate(Plugin plugin, String gitPlatform, String org, String repository, String token) {
-        MCEngineApiUtilUpdate.checkUpdate(plugin, gitPlatform, org, repository, token);
+    public static void checkUpdate(Plugin plugin, Logger logger, String gitPlatform, String org, String repository, String token) {
+        MCEngineApiUtilUpdate.checkUpdate(plugin, logger, gitPlatform, org, repository, token);
     }
 }
