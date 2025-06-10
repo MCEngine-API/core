@@ -1,9 +1,10 @@
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'maven-publish'
 }
 
-// Set project version using a property, defaulting to 'unspecified' if not found
+// Set project version using a property, defaulting to 'undefined' if not found
 version = project.properties[project.name + '.version'] ?: 'undefined'
 group = 'io.github.mcengine'
 
@@ -22,98 +23,35 @@ ext {
     repository_name = System.getenv('REPOSITORY_NAME') ?: 'mcengine-api'
     repository_token = System.getenv('REPOSITORY_TOKEN') ?: 'null'
 
-    /* Project Information */
+    // Project Information
     jarName = System.getenv('PROJECT_NAME') ?: 'MCEngine'
 }
 
-allprojects {
-    group = 'io.github.mcengine'
+repositories {
+    mavenCentral()
+    mavenLocal()
 
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    repositories {
-        mavenCentral()
-        mavenLocal()
-
-        maven {
-            url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
-            content {
-                includeGroup 'org.bukkit'
-                includeGroup 'org.spigotmc'
-            }
-        }
-
-        maven {
-            name = "papermc"
-            url = 'https://repo.papermc.io/repository/maven-public/'
-        }
-
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'https://oss.sonatype.org/content/repositories/central' }
-    }
-}
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
-
-    version = project.properties[project.name + '.version'] ?: 'undefined'
-
-    tasks.named('jar').configure {
-        enabled = false
-    }
-
-    tasks.named('shadowJar').configure {
-        archiveClassifier = null
-    }
-
-    if (project.path == ":api") {
-        apply plugin: 'maven-publish'
-
-        publishing {
-            repositories {
-                maven {
-                    name = 'GitHubPackages'
-                    url = uri("https://maven.pkg.github.com/${project.organization_name}/${project.repository_name}")
-                    credentials {
-                        username = project.user_git_name
-                        password = project.user_github_token ?: project.repository_token ?: project.organization_token
-                    }
-                }
-            }
-            publications {
-                mavenJava(MavenPublication) {
-                    artifact(tasks.named('shadowJar').get())
-
-                    pom {
-                        name.set(project.jarName)
-                        description.set("The ${project.jarName} API is designed for use by addons.")
-                        url.set("https://github.com/${project.organization_name}/${project.repository_name}")
-
-                        scm {
-                            connection.set("scm:git:git://github.com/${project.organization_name}/${project.repository_name}.git")
-                            developerConnection.set("scm:git:ssh://github.com:${project.organization_name}/${project.repository_name}.git")
-                            url.set("https://github.com/${project.organization_name}/${project.repository_name}")
-                        }
-
-                        developers {
-                            developer {
-                                id.set('jetsadawijit')
-                                name.set('Jetsada Wijit')
-                                email.set('jetsadawijit@outlook.com')
-                                url.set('https://jetsadawijit.github.io')
-                            }
-                        }
-                    }
-                }
-            }
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+        content {
+            includeGroup 'org.bukkit'
+            includeGroup 'org.spigotmc'
         }
     }
+
+    maven {
+        name = "papermc"
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://oss.sonatype.org/content/repositories/central' }
 }
 
 dependencies {
-    implementation project(path: ":api", configuration: 'shadow')
+    // Add your dependencies here
+    compileOnly 'org.spigotmc:spigot-api:1.21.5-R0.1-SNAPSHOT'
+    implementation 'com.google.code.gson:gson:2.13.1'
 }
 
 shadowJar {
@@ -124,6 +62,47 @@ shadowJar {
 
 tasks.named('jar').configure {
     enabled = false
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/${project.organization_name}/${project.repository_name}")
+            credentials {
+                username = project.user_git_name
+                password = project.user_github_token ?: project.repository_token ?: project.organization_token
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            artifact tasks.named('shadowJar').get()
+            artifactId = 'mcengine-api'
+
+            pom {
+                name.set(project.jarName)
+                description.set("The ${project.jarName} API is designed for use by addons.")
+                url.set("https://github.com/${project.organization_name}/${project.repository_name}")
+
+                scm {
+                    connection.set("scm:git:git://github.com/${project.organization_name}/${project.repository_name}.git")
+                    developerConnection.set("scm:git:ssh://github.com:${project.organization_name}/${project.repository_name}.git")
+                    url.set("https://github.com/${project.organization_name}/${project.repository_name}")
+                }
+
+                developers {
+                    developer {
+                        id.set('jetsadawijit')
+                        name.set('Jetsada Wijit')
+                        email.set('jetsadawijit@outlook.com')
+                        url.set('https://jetsadawijit.github.io')
+                    }
+                }
+            }
+        }
+    }
 }
 
 build.dependsOn(shadowJar)
