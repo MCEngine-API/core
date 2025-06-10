@@ -17,6 +17,8 @@ import java.util.logging.Logger;
  */
 public class MCEngineApiUtilUpdate {
 
+    private static final List<String> LABEL_PRIORITY = List.of("BETA", "ALPHA", "SNAPSHOT", "RELEASE");
+
     /**
      * Checks for plugin updates from GitHub or GitLab asynchronously and logs results.
      * Used by core plugins.
@@ -121,17 +123,7 @@ public class MCEngineApiUtilUpdate {
 
     /**
      * Compares the current plugin version with the latest version to determine if an update is available.
-     * Supports complex formats like:
-     *   - 1.0.0-SNAPSHOT
-     *   - 1.0.0-1-SNAPSHOT
-     *   - 1.0.0-2-2-1-SNAPSHOT
-     *   - 1.0.0-RELEASE
-     *   - 1.0.1-2-2-1-1-SNAPSHOT
-     *
-     * Comparison rules:
-     * - RELEASE is always considered the most stable and highest version
-     * - Numeric version parts are compared in order
-     * - SNAPSHOT is considered lower than RELEASE
+     * Uses both numerical and label rank (e.g., ALPHA > BETA > SNAPSHOT > RELEASE).
      *
      * @param currentVersion The currently installed version.
      * @param latestVersion  The latest version from the API.
@@ -140,44 +132,69 @@ public class MCEngineApiUtilUpdate {
     private static boolean isUpdateAvailable(String currentVersion, String latestVersion) {
         if (currentVersion.equalsIgnoreCase(latestVersion)) return false;
 
-        // Normalize version strings (remove -RELEASE or -SNAPSHOT for comparison)
-        String normCurrent = currentVersion.replace("-RELEASE", "");
-        String normLatest = latestVersion.replace("-RELEASE", "");
+        VersionInfo current = extractVersionParts(currentVersion);
+        VersionInfo latest = extractVersionParts(latestVersion);
 
-        List<Integer> currentParts = parseVersion(normCurrent);
-        List<Integer> latestParts = parseVersion(normLatest);
-
-        // Compare version numbers part-by-part
-        int maxLen = Math.max(currentParts.size(), latestParts.size());
+        int maxLen = Math.max(current.numbers.size(), latest.numbers.size());
         for (int i = 0; i < maxLen; i++) {
-            int curr = i < currentParts.size() ? currentParts.get(i) : 0;
-            int latest = i < latestParts.size() ? latestParts.get(i) : 0;
-            if (latest > curr) return true;
-            if (latest < curr) return false;
+            int curr = i < current.numbers.size() ? current.numbers.get(i) : 0;
+            int next = i < latest.numbers.size() ? latest.numbers.get(i) : 0;
+            if (next > curr) return true;
+            if (next < curr) return false;
         }
 
-        // RELEASE is newer than any SNAPSHOT with same version parts
-        boolean currentIsSnapshot = currentVersion.contains("SNAPSHOT");
-        boolean latestIsSnapshot = latestVersion.contains("SNAPSHOT");
-
-        return currentIsSnapshot && !latestIsSnapshot;
+        return latest.labelRank > current.labelRank;
     }
 
     /**
-     * Parses a version string like "1.0.1-2-2-1" into a list of integers.
-     *
-     * @param version The version string (without -RELEASE or -SNAPSHOT).
-     * @return List of version components as integers.
+     * Represents a parsed version with numbers and label rank.
      */
-    private static List<Integer> parseVersion(String version) {
-        List<Integer> parts = new ArrayList<>();
-        for (String part : version.replace("-SNAPSHOT", "").split("[-\\.]")) {
+    private static class VersionInfo {
+        List<Integer> numbers = new ArrayList<>();
+        int labelRank = -1;
+    }
+
+    /**
+     * Extracts version components and ranks the stability label.
+     *
+     * @param version Version string like 1.0.0-1-SNAPSHOT
+     * @return Parsed version information
+     */
+    private static VersionInfo extractVersionParts(String version) {
+        VersionInfo info = new VersionInfo();
+        String[] parts = version.split("[-\\.]");
+
+        for (String part : parts) {
             try {
-                parts.add(Integer.parseInt(part));
+                info.numbers.add(Integer.parseInt(part));
             } catch (NumberFormatException e) {
-                parts.add(0); // fallback for malformed versions
+                int rank = getLabelRank(part);
+                if (rank > info.labelRank) {
+                    info.labelRank = rank;
+                }
             }
         }
-        return parts;
+
+        return info;
+    }
+
+    /**
+     * Returns the priority of the given label.
+     * Later label in the list is considered newer.
+     *
+     * @param label Version label (e.g., RELEASE, SNAPSHOT)
+     * @return Rank index or -1 if unknown
+     */
+    private static int getLabelRank(String label) {
+        for (int i = 0; i < LABEL_PRIORITY.size(); i++) {
+            if (label.equalsIgnoreCase(LABEL_PRIORITY.get(i))) {
+                return i; // Later = newer
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        
     }
 }
