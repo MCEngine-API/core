@@ -55,7 +55,7 @@ public class MCEngineApiUtilUpdate {
                 checkUpdateGitLab(plugin, logger, prefix, org, repository, token);
                 break;
             default:
-                logger.warning(prefix + " Unknown platform: " + gitPlatform);
+                logger.warning(prefix + "Unknown platform: " + gitPlatform);
         }
     }
 
@@ -98,7 +98,7 @@ public class MCEngineApiUtilUpdate {
                 }
 
                 if (latestVersion == null) {
-                    logger.warning(prefix + " [UpdateCheck] Could not find release tag from API: " + apiUrl);
+                    logger.warning(prefix + "[UpdateCheck] Could not find release tag from API: " + apiUrl);
                     return;
                 }
 
@@ -106,15 +106,15 @@ public class MCEngineApiUtilUpdate {
                 boolean changed = isUpdateAvailable(version, latestVersion);
 
                 if (changed) {
-                    logger.info(prefix + " §6A new update is available!");
-                    logger.info(prefix + " Current version: " + version + " >> Latest: " + latestVersion);
-                    logger.info(prefix + " Download: " + downloadUrl);
+                    logger.info(prefix + "§6A new update is available!");
+                    logger.info(prefix + "Current version: " + version + " >> Latest: " + latestVersion);
+                    logger.info(prefix + "Download: " + downloadUrl);
                 } else {
-                    logger.info(prefix + " No updates found. You are running the latest version.");
+                    logger.info(prefix + "No updates found. You are running the latest version.");
                 }
 
             } catch (Exception ex) {
-                logger.warning(prefix + " [UpdateCheck] [" + (apiUrl.contains("github") ? "GitHub" : "GitLab") + "] Could not check updates: " + ex.getMessage());
+                logger.warning(prefix + "[UpdateCheck] [" + (apiUrl.contains("github") ? "GitHub" : "GitLab") + "] Could not check updates: " + ex.getMessage());
             }
         });
     }
