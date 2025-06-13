@@ -90,4 +90,16 @@ public class MCEngineApi {
     public static void checkUpdate(Plugin plugin, Logger logger, String prefix, String gitPlatform, String org, String repository, String token) {
         MCEngineApiUtilUpdate.checkUpdate(plugin, logger, prefix, gitPlatform, org, repository, token);
     }
+
+    /**
+     * Displays a list of loaded addons or DLCs based on type.
+     *
+     * @param player The player to send the extension list to.
+     * @param plugin The plugin instance used for folder resolution.
+     * @param type   The type of extension ("addon" or "dlc").
+     * @return true after displaying the list.
+     */
+    public static boolean handleExtensionList(Player player, Plugin plugin, String type) {
+        return MCEngineApiUtilCommand.handleExtensionList(player, plugin, type);
+    }
 }
