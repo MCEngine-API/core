@@ -6,6 +6,7 @@ import io.github.mcengine.api.mcengine.util.MCEngineApiUtilExtension;
 import io.github.mcengine.api.mcengine.util.MCEngineApiUtilUpdate;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.logging.Logger;
