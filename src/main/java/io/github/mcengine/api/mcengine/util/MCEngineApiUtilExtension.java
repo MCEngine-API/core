@@ -58,7 +58,7 @@ public class MCEngineApiUtilExtension {
             try (
                 URLClassLoader classLoader = new URLClassLoader(
                     new URL[]{file.toURI().toURL()},
-                    MCEngineApiUtilExtension.class.getClassLoader()
+                    plugin.getClass().getClassLoader()
                 );
                 JarFile jar = new JarFile(file)
             ) {
@@ -79,19 +79,15 @@ public class MCEngineApiUtilExtension {
                     try {
                         Class<?> clazz = classLoader.loadClass(targetClassName);
 
-                        if (clazz.isInterface()) {
-                            logger.fine("[" + type + "] Skipped interface: " + targetClassName);
-                            continue;
-                        }
-
-                        if (Modifier.isAbstract(clazz.getModifiers())) {
-                            logger.fine("[" + type + "] Skipped abstract: " + targetClassName);
+                        if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
+                            logger.fine("[" + type + "] Skipped: " + targetClassName + " (interface or abstract)");
                             continue;
                         }
 
                         Class<?> requiredInterface;
                         try {
-                            requiredInterface = Class.forName(className, false, MCEngineApiUtilExtension.class.getClassLoader());
+                            // Load interface using plugin's class loader
+                            requiredInterface = Class.forName(className, false, plugin.getClass().getClassLoader());
                         } catch (ClassNotFoundException e) {
                             logger.warning("[" + type + "] Interface not found: " + className);
                             break;
