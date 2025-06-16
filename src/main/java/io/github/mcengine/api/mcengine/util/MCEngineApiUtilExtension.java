@@ -25,13 +25,17 @@ public class MCEngineApiUtilExtension {
      * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
      *
      * @param plugin     The Bukkit plugin instance.
-     * @param className  The fully qualified name of the interface class to filter against.
-     *                   If null, all classes with onLoad(Plugin) are accepted.
+     * @param className  The fully qualified name of the interface class to filter against. Must not be null.
      * @param folderName The folder name (relative to the plugin data folder).
      * @param type       The extension type label (e.g., "AddOn", "DLC").
      */
     public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
         Logger logger = plugin.getLogger();
+
+        if (className == null) {
+            throw new IllegalArgumentException("className must not be null.");
+        }
+
         File folder = new File(plugin.getDataFolder(), folderName);
 
         if (!folder.exists() && !folder.mkdirs()) {
@@ -85,21 +89,17 @@ public class MCEngineApiUtilExtension {
                             continue;
                         }
 
-                        // If filtering by interface
-                        if (className != null) {
-                            Class<?> requiredInterface;
-                            try {
-                                // Load interface using main plugin class loader instead of child
-                                requiredInterface = Class.forName(className, false, MCEngineApiUtilExtension.class.getClassLoader());
-                            } catch (ClassNotFoundException e) {
-                                logger.warning("[" + type + "] Interface not found: " + className);
-                                break;
-                            }
+                        Class<?> requiredInterface;
+                        try {
+                            requiredInterface = Class.forName(className, false, MCEngineApiUtilExtension.class.getClassLoader());
+                        } catch (ClassNotFoundException e) {
+                            logger.warning("[" + type + "] Interface not found: " + className);
+                            break;
+                        }
 
-                            if (!requiredInterface.isAssignableFrom(clazz)) {
-                                logger.fine("[" + type + "] Skipped: " + targetClassName + " does not implement " + className);
-                                continue;
-                            }
+                        if (!requiredInterface.isAssignableFrom(clazz)) {
+                            logger.fine("[" + type + "] Skipped: " + targetClassName + " does not implement " + className);
+                            continue;
                         }
 
                         Method onLoadMethod;
@@ -115,7 +115,7 @@ public class MCEngineApiUtilExtension {
 
                         logger.info("[" + type + "] Loaded: " + targetClassName);
                         loaded = true;
-                        break; // stop after first valid class loaded
+                        break;
                     } catch (Throwable e) {
                         logger.warning("[" + type + "] Failed to load class: " + targetClassName);
                         e.printStackTrace();
