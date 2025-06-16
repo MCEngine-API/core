@@ -39,15 +39,16 @@ public class MCEngineApi {
     }
 
     /**
-     * Loads external AddOn or DLC extensions from a folder (e.g., "addons" or "dlcs").
-     * The JARs are expected to contain a class with a public onLoad(Plugin) method.
+     * Loads external AddOn or DLC extensions with filtering by class interface name.
+     * Only classes that implement the specified interface and provide onLoad(Plugin) are invoked.
      *
      * @param plugin     the plugin instance
+     * @param className  the interface class name to filter by (e.g., "com.example.MyAddOnInterface")
      * @param folderName the folder name inside the plugin data folder (e.g., "addons", "dlcs")
      * @param type       the label used for logging (e.g., "AddOn", "DLC")
      */
-    public static void loadExtensions(Plugin plugin, String folderName, String type) {
-        MCEngineApiUtilExtension.loadExtensions(plugin, folderName, type);
+    public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
+        MCEngineApiUtilExtension.loadExtensions(plugin, className, folderName, type);
     }
 
     /**

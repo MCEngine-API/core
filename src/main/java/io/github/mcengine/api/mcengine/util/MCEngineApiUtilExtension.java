@@ -21,14 +21,16 @@ public class MCEngineApiUtilExtension {
     private static final Map<String, List<String>> loadedExtensions = new HashMap<>();
 
     /**
-     * Loads extensions (AddOns or DLCs) from the specified folder.
-     * Scans JAR files for classes with an "onLoad(Plugin)" method and invokes them.
+     * Loads extensions (AddOns or DLCs) from the specified folder,
+     * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
      *
      * @param plugin     The Bukkit plugin instance.
+     * @param className  The fully qualified name of the interface class to filter against.
+     *                   If null, all classes with onLoad(Plugin) are accepted.
      * @param folderName The folder name (relative to the plugin data folder).
      * @param type       The extension type label (e.g., "AddOn", "DLC").
      */
-    public static void loadExtensions(Plugin plugin, String folderName, String type) {
+    public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
         Logger logger = plugin.getLogger();
         File folder = new File(plugin.getDataFolder(), folderName);
 
@@ -67,38 +69,54 @@ public class MCEngineApiUtilExtension {
                         continue;
                     }
 
-                    String className = name.replace("/", ".").replace(".class", "");
-                    logger.fine("[" + type + "] Inspecting: " + className);
+                    String targetClassName = name.replace("/", ".").replace(".class", "");
+                    logger.fine("[" + type + "] Inspecting: " + targetClassName);
 
                     try {
-                        Class<?> clazz = classLoader.loadClass(className);
+                        Class<?> clazz = classLoader.loadClass(targetClassName);
 
                         if (clazz.isInterface()) {
-                            logger.fine("[" + type + "] Skipped interface: " + className);
+                            logger.fine("[" + type + "] Skipped interface: " + targetClassName);
                             continue;
                         }
 
                         if (Modifier.isAbstract(clazz.getModifiers())) {
-                            logger.fine("[" + type + "] Skipped abstract: " + className);
+                            logger.fine("[" + type + "] Skipped abstract: " + targetClassName);
                             continue;
+                        }
+
+                        // If filtering by interface
+                        if (className != null) {
+                            Class<?> requiredInterface;
+                            try {
+                                requiredInterface = classLoader.loadClass(className);
+                            } catch (ClassNotFoundException e) {
+                                logger.warning("[" + type + "] Interface not found: " + className);
+                                break;
+                            }
+
+                            if (!requiredInterface.isAssignableFrom(clazz)) {
+                                logger.fine("[" + type + "] Skipped: " + targetClassName + " does not implement " + className);
+                                continue;
+                            }
                         }
 
                         Method onLoadMethod;
                         try {
                             onLoadMethod = clazz.getMethod("onLoad", Plugin.class);
                         } catch (NoSuchMethodException e) {
-                            logger.fine("[" + type + "] No onLoad(Plugin) found in: " + className);
+                            logger.fine("[" + type + "] No onLoad(Plugin) found in: " + targetClassName);
                             continue;
                         }
 
                         Object extensionInstance = clazz.getDeclaredConstructor().newInstance();
                         onLoadMethod.invoke(extensionInstance, plugin);
 
-                        logger.info("[" + type + "] Loaded: " + className);
+                        logger.info("[" + type + "] Loaded: " + targetClassName);
                         loaded = true;
                         break; // stop after first valid class loaded
                     } catch (Throwable e) {
-                        logger.warning("[" + type + "] Failed to load class: " + className);
+                        logger.warning("[" + type + "] Failed to load class: " + targetClassName);
                         e.printStackTrace();
                     }
                 }
