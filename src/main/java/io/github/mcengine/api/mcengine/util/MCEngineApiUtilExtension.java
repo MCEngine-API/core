@@ -89,7 +89,8 @@ public class MCEngineApiUtilExtension {
                         if (className != null) {
                             Class<?> requiredInterface;
                             try {
-                                requiredInterface = classLoader.loadClass(className);
+                                // Load interface using main plugin class loader instead of child
+                                requiredInterface = Class.forName(className, false, MCEngineApiUtilExtension.class.getClassLoader());
                             } catch (ClassNotFoundException e) {
                                 logger.warning("[" + type + "] Interface not found: " + className);
                                 break;
