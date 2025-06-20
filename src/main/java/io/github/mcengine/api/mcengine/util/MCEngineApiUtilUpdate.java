@@ -133,7 +133,7 @@ public class MCEngineApiUtilUpdate {
                 boolean updateAvailable = isUpdateAvailable(currentVersion, latestVersion);
 
                 if (updateAvailable) {
-                    logger.info(prefix + "§6A new update is available!");
+                    logger.info(prefix + "new update is available!");
                     logger.info(prefix + "Current version: " + currentVersion + " >> Latest: " + latestVersion);
                     logger.info(prefix + "Download: " + downloadUrl);
                 } else {
