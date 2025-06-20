@@ -8,27 +8,26 @@ import org.bukkit.plugin.Plugin;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Utility class for checking updates from GitHub or GitLab repositories.
+ * Utility class for checking plugin updates from GitHub or GitLab repositories.
  */
 public class MCEngineApiUtilUpdate {
 
+    // Priority list in descending order of stability: RELEASE > SNAPSHOT > ALPHA > BETA
     private static final List<String> LABEL_PRIORITY = List.of("BETA", "ALPHA", "SNAPSHOT", "RELEASE");
 
     /**
-     * Checks for plugin updates from GitHub or GitLab asynchronously and logs results.
-     * Used by core plugins.
+     * Checks for updates for core plugins.
      *
-     * @param plugin      The plugin instance.
-     * @param logger      The logger instance to log messages.
-     * @param gitPlatform The git platform ("github" or "gitlab").
-     * @param org         The organization or user name.
-     * @param repository  The repository name.
-     * @param token       The API authentication token (can be null or "null" if not used).
+     * @param plugin      Plugin instance.
+     * @param logger      Logger to output messages.
+     * @param gitPlatform Git platform ("github" or "gitlab").
+     * @param org         GitHub/GitLab organization or username.
+     * @param repository  Repository name.
+     * @param token       GitHub/GitLab API token (can be null).
      */
     public static void checkUpdate(Plugin plugin, Logger logger,
                                    String gitPlatform, String org, String repository, String token) {
@@ -36,31 +35,35 @@ public class MCEngineApiUtilUpdate {
     }
 
     /**
-     * Checks for plugin updates from GitHub or GitLab asynchronously and logs results with a prefixed format.
-     * Used by AddOns or DLCs to customize log format.
+     * Checks for updates for plugins with custom log prefix (used by AddOns or DLCs).
      *
-     * @param plugin      The plugin instance.
-     * @param logger      The logger instance to log messages.
-     * @param prefix      A prefix string to prepend to all log messages.
-     * @param gitPlatform The git platform ("github" or "gitlab").
-     * @param org         The organization or user name.
-     * @param repository  The repository name.
-     * @param token       The API authentication token (can be null or "null" if not used).
+     * @param plugin      Plugin instance.
+     * @param logger      Logger to output messages.
+     * @param prefix      Prefix to prepend to all logs.
+     * @param gitPlatform Git platform ("github" or "gitlab").
+     * @param org         GitHub/GitLab organization or username.
+     * @param repository  Repository name.
+     * @param token       GitHub/GitLab API token (can be null).
      */
     public static void checkUpdate(Plugin plugin, Logger logger, String prefix,
                                    String gitPlatform, String org, String repository, String token) {
         switch (gitPlatform.toLowerCase()) {
-            case "github":
-                checkUpdateGitHub(plugin, logger, prefix, org, repository, token);
-                break;
-            case "gitlab":
-                checkUpdateGitLab(plugin, logger, prefix, org, repository, token);
-                break;
-            default:
-                logger.warning(prefix + "Unknown platform: " + gitPlatform);
+            case "github" -> checkUpdateGitHub(plugin, logger, prefix, org, repository, token);
+            case "gitlab" -> checkUpdateGitLab(plugin, logger, prefix, org, repository, token);
+            default -> logger.warning(prefix + "Unknown platform: " + gitPlatform);
         }
     }
 
+    /**
+     * Checks for the latest release from GitHub and compares with current plugin version.
+     *
+     * @param plugin      Plugin instance.
+     * @param logger      Logger for output.
+     * @param prefix      Prefix to prepend to logs.
+     * @param org         GitHub organization or username.
+     * @param repository  GitHub repository name.
+     * @param githubToken GitHub API token (can be null).
+     */
     private static void checkUpdateGitHub(Plugin plugin, Logger logger, String prefix,
                                           String org, String repository, String githubToken) {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/releases/latest", org, repository);
@@ -68,6 +71,16 @@ public class MCEngineApiUtilUpdate {
         fetchAndCompareUpdate(plugin, logger, prefix, apiUrl, downloadUrl, githubToken, "application/vnd.github.v3+json", false);
     }
 
+    /**
+     * Checks for the latest release from GitLab and compares with current plugin version.
+     *
+     * @param plugin      Plugin instance.
+     * @param logger      Logger for output.
+     * @param prefix      Prefix to prepend to logs.
+     * @param org         GitLab group or username.
+     * @param repository  GitLab repository name.
+     * @param gitlabToken GitLab API token (can be null).
+     */
     private static void checkUpdateGitLab(Plugin plugin, Logger logger, String prefix,
                                           String org, String repository, String gitlabToken) {
         String apiUrl = String.format("https://gitlab.com/api/v4/projects/%s%%2F%s/releases", org, repository);
@@ -75,6 +88,18 @@ public class MCEngineApiUtilUpdate {
         fetchAndCompareUpdate(plugin, logger, prefix, apiUrl, downloadUrl, gitlabToken, "application/json", true);
     }
 
+    /**
+     * Fetches the latest version from the given API and compares it with the current plugin version.
+     *
+     * @param plugin       Plugin instance.
+     * @param logger       Logger for output.
+     * @param prefix       Prefix to prepend to log messages.
+     * @param apiUrl       API endpoint for the latest release.
+     * @param downloadUrl  Download page URL for display.
+     * @param token        Optional API token.
+     * @param acceptHeader Accept header value for HTTP request.
+     * @param jsonArray    Whether the response is a JSON array (GitLab) or object (GitHub).
+     */
     private static void fetchAndCompareUpdate(Plugin plugin, Logger logger, String prefix,
                                               String apiUrl, String downloadUrl,
                                               String token, String acceptHeader, boolean jsonArray) {
@@ -83,7 +108,7 @@ public class MCEngineApiUtilUpdate {
                 HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();
                 con.setRequestMethod("GET");
                 if (token != null && !token.trim().isEmpty() && !"null".equalsIgnoreCase(token.trim())) {
-                    con.setRequestProperty("Authorization", "token " + token);
+                    con.setRequestProperty("Authorization", "Bearer " + token);
                 }
                 con.setRequestProperty("Accept", acceptHeader);
                 con.setDoOutput(true);
@@ -104,12 +129,12 @@ public class MCEngineApiUtilUpdate {
                     return;
                 }
 
-                String version = plugin.getDescription().getVersion();
-                boolean changed = isUpdateAvailable(version, latestVersion);
+                String currentVersion = plugin.getDescription().getVersion();
+                boolean updateAvailable = isUpdateAvailable(currentVersion, latestVersion);
 
-                if (changed) {
+                if (updateAvailable) {
                     logger.info(prefix + "§6A new update is available!");
-                    logger.info(prefix + "Current version: " + version + " >> Latest: " + latestVersion);
+                    logger.info(prefix + "Current version: " + currentVersion + " >> Latest: " + latestVersion);
                     logger.info(prefix + "Download: " + downloadUrl);
                 } else {
                     logger.info(prefix + "No updates found. You are running the latest version.");
@@ -122,13 +147,13 @@ public class MCEngineApiUtilUpdate {
     }
 
     /**
-     * Compares the current plugin version with the latest version to determine if an update is available.
-     * Uses both numerical and label rank (e.g., ALPHA > BETA > SNAPSHOT > RELEASE).
+     * Compares current and latest version to determine if an update is needed.
      *
-     * @param currentVersion The currently installed version.
-     * @param latestVersion  The latest version from the API.
-     * @return true if an update is available; false otherwise.
+     * @param currentVersion Current version string.
+     * @param latestVersion  Latest version string.
+     * @return True if an update is available.
      */
+    @SuppressWarnings("unused")
     private static boolean isUpdateAvailable(String currentVersion, String latestVersion) {
         if (currentVersion.equalsIgnoreCase(latestVersion)) return false;
 
@@ -147,7 +172,7 @@ public class MCEngineApiUtilUpdate {
     }
 
     /**
-     * Represents a parsed version with numbers and label rank.
+     * Holds parsed version number components and label rank.
      */
     private static class VersionInfo {
         List<Integer> numbers = new ArrayList<>();
@@ -155,10 +180,10 @@ public class MCEngineApiUtilUpdate {
     }
 
     /**
-     * Extracts version components and ranks the stability label.
+     * Parses version into numeric parts and label priority.
      *
-     * @param version Version string like 1.0.0-1-SNAPSHOT
-     * @return Parsed version information
+     * @param version Version string (e.g., 1.2.3-ALPHA).
+     * @return Parsed version info.
      */
     private static VersionInfo extractVersionParts(String version) {
         VersionInfo info = new VersionInfo();
@@ -179,22 +204,17 @@ public class MCEngineApiUtilUpdate {
     }
 
     /**
-     * Returns the priority of the given label.
-     * Later label in the list is considered newer.
+     * Gets label rank for stability label. Higher value = more stable.
      *
-     * @param label Version label (e.g., RELEASE, SNAPSHOT)
-     * @return Rank index or -1 if unknown
+     * @param label Label to evaluate (e.g., ALPHA, RELEASE).
+     * @return Rank index, or -1 if not found.
      */
     private static int getLabelRank(String label) {
         for (int i = 0; i < LABEL_PRIORITY.size(); i++) {
             if (label.equalsIgnoreCase(LABEL_PRIORITY.get(i))) {
-                return i; // Later = newer
+                return LABEL_PRIORITY.size() - 1 - i; // Higher index = more stable
             }
         }
         return -1;
-    }
-
-    public static void main(String[] args) {
-        
     }
 }
