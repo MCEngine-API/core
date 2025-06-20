@@ -16,8 +16,13 @@ import java.util.logging.Logger;
  */
 public class MCEngineApiUtilUpdate {
 
-    // Priority list in descending order of stability: RELEASE > SNAPSHOT > ALPHA > BETA
-    private static final List<String> LABEL_PRIORITY = List.of("BETA", "ALPHA", "SNAPSHOT", "RELEASE");
+    // Label priority from most to least stable
+    private static final List<String> LABEL_PRIORITY = List.of(
+        "RELEASE",
+        "SNAPSHOT",
+        "ALPHA",
+        "BETA"
+        );
 
     /**
      * Checks for updates for core plugins.
