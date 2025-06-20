@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 /**
  * Utility class for loading AddOns or DLCs from JAR files.
+ * Supports recursive directory search and class loading.
  */
 public class MCEngineApiUtilExtension {
 
@@ -21,7 +22,7 @@ public class MCEngineApiUtilExtension {
     private static final Map<String, List<String>> loadedExtensions = new HashMap<>();
 
     /**
-     * Loads extensions (AddOns or DLCs) from the specified folder,
+     * Loads extensions (AddOns or DLCs) from the specified folder (recursively),
      * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
      *
      * @param plugin     The Bukkit plugin instance.
@@ -36,22 +37,23 @@ public class MCEngineApiUtilExtension {
             throw new IllegalArgumentException("className must not be null.");
         }
 
-        File folder = new File(plugin.getDataFolder(), folderName);
-
-        if (!folder.exists() && !folder.mkdirs()) {
+        File rootFolder = new File(plugin.getDataFolder(), folderName);
+        if (!rootFolder.exists() && !rootFolder.mkdirs()) {
             logger.warning("[" + type + "] Could not create " + folderName + " directory.");
             return;
         }
 
-        File[] files = folder.listFiles(file -> file.isFile() && file.getName().endsWith(".jar"));
-        if (files == null || files.length == 0) {
+        List<File> jarFiles = new ArrayList<>();
+        collectJarFilesRecursive(rootFolder, jarFiles);
+
+        if (jarFiles.isEmpty()) {
             logger.info("[" + type + "] No " + folderName + " found.");
             return;
         }
 
         List<String> successfullyLoaded = new ArrayList<>();
 
-        for (File file : files) {
+        for (File file : jarFiles) {
             boolean loaded = false;
             logger.info("[" + type + "] Scanning JAR: " + file.getName());
 
@@ -86,7 +88,6 @@ public class MCEngineApiUtilExtension {
 
                         Class<?> requiredInterface;
                         try {
-                            // Load interface using plugin's class loader
                             requiredInterface = Class.forName(className, false, plugin.getClass().getClassLoader());
                         } catch (ClassNotFoundException e) {
                             logger.warning("[" + type + "] Interface not found: " + className);
@@ -131,6 +132,25 @@ public class MCEngineApiUtilExtension {
         }
 
         loadedExtensions.put(folderName, successfullyLoaded);
+    }
+
+    /**
+     * Recursively collects all .jar files under the given folder and subfolders.
+     *
+     * @param folder   The folder to search in.
+     * @param jarFiles The list to append found .jar files to.
+     */
+    private static void collectJarFilesRecursive(File folder, List<File> jarFiles) {
+        File[] files = folder.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+            if (file.isDirectory()) {
+                collectJarFilesRecursive(file, jarFiles);
+            } else if (file.isFile() && file.getName().endsWith(".jar")) {
+                jarFiles.add(file);
+            }
+        }
     }
 
     /**
