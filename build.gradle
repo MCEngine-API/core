@@ -20,7 +20,7 @@ ext {
     organization_token = System.getenv('ORGANIZATION_TOKEN') ?: 'null'
 
     // Repository
-    repository_name = System.getenv('REPOSITORY_NAME') ?: 'mcengine-api'
+    repository_name = System.getenv('REPOSITORY_NAME') ?: 'core-api'
     repository_token = System.getenv('REPOSITORY_TOKEN') ?: 'null'
 
     // Project Information
