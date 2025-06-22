@@ -37,7 +37,7 @@ public class MCEngineApiUtilExtension {
             throw new IllegalArgumentException("className must not be null.");
         }
 
-        File rootFolder = new File(plugin.getDataFolder(), folderName);
+        File rootFolder = new File(plugin.getDataFolder(), "extensions/" + folderName);
         if (!rootFolder.exists() && !rootFolder.mkdirs()) {
             logger.warning("[" + type + "] Could not create " + folderName + " directory.");
             return;
