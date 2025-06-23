@@ -5,23 +5,23 @@ plugins {
 }
 
 // Set project version using a property, defaulting to 'undefined' if not found
-version = project.properties[project.name + '.version'] ?: 'undefined'
+version = project.properties[project.name + '.version']
 group = 'io.github.mcengine'
 
 ext {
     // User
-    user_git_name = System.getenv('USER_GIT_NAME') ?: 'null'
+    user_git_name = System.getenv('USER_GIT_NAME')
 
     // GitHub
-    user_github_token = System.getenv('USER_GITHUB_TOKEN') ?: ''
+    user_github_token = System.getenv('USER_GITHUB_TOKEN')
 
     // Organization
     organization_name = System.getenv('ORGANIZATION_NAME') ?: 'MCEngine'
-    organization_token = System.getenv('ORGANIZATION_TOKEN') ?: 'null'
+    organization_token = System.getenv('ORGANIZATION_TOKEN')
 
     // Repository
     repository_name = System.getenv('REPOSITORY_NAME') ?: 'core-api'
-    repository_token = System.getenv('REPOSITORY_TOKEN') ?: 'null'
+    repository_token = System.getenv('REPOSITORY_TOKEN')
 
     // Project Information
     jarName = System.getenv('PROJECT_NAME') ?: 'MCEngine'
@@ -51,7 +51,7 @@ repositories {
 dependencies {
     // Add your dependencies here
     compileOnly 'org.spigotmc:spigot-api:1.21.6-R0.1-SNAPSHOT'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    compileOnly 'com.google.code.gson:gson:2.13.1'
 }
 
 shadowJar {

@@ -1,4 +1,4 @@
-package io.github.mcengine.api.mcengine.addon;
+package io.github.mcengine.api.mcengine.extension.addon;
 
 import org.bukkit.plugin.Plugin;
 
