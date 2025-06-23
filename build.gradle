@@ -51,7 +51,7 @@ repositories {
 dependencies {
     // Add your dependencies here
     compileOnly 'org.spigotmc:spigot-api:1.21.6-R0.1-SNAPSHOT'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    compileOnly 'com.google.code.gson:gson:2.13.1'
 }
 
 shadowJar {
