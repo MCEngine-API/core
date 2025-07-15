@@ -16,14 +16,6 @@ import java.util.logging.Logger;
  */
 public class MCEngineApiUtilUpdate {
 
-    // Label priority from most to least stable
-    private static final List<String> LABEL_PRIORITY = List.of(
-        "RELEASE",
-        "SNAPSHOT",
-        "ALPHA",
-        "BETA"
-        );
-
     /**
      * Checks for updates for core plugins.
      *
@@ -153,6 +145,7 @@ public class MCEngineApiUtilUpdate {
 
     /**
      * Compares current and latest version to determine if an update is needed.
+     * Version format must be in yyyy.m.m or yyyy.m.m-dd
      *
      * @param currentVersion Current version string.
      * @param latestVersion  Latest version string.
@@ -173,21 +166,24 @@ public class MCEngineApiUtilUpdate {
             if (next < curr) return false;
         }
 
-        return latest.labelRank > current.labelRank;
+        return false; // Suffixes like -dd are considered part of numeric ordering
     }
 
     /**
-     * Holds parsed version number components and label rank.
+     * Holds parsed version number components.
      */
     private static class VersionInfo {
-        List<Integer> numbers = new ArrayList<>();
-        int labelRank = -1;
+
+        /**
+         * Numeric components of the version.
+         */
+        private final List<Integer> numbers = new ArrayList<>();
     }
 
     /**
-     * Parses version into numeric parts and label priority.
+     * Parses version into numeric components.
      *
-     * @param version Version string (e.g., 1.2.3-ALPHA).
+     * @param version Version string (e.g., 2025.0.7 or 2025.0.7-15).
      * @return Parsed version info.
      */
     private static VersionInfo extractVersionParts(String version) {
@@ -197,29 +193,11 @@ public class MCEngineApiUtilUpdate {
         for (String part : parts) {
             try {
                 info.numbers.add(Integer.parseInt(part));
-            } catch (NumberFormatException e) {
-                int rank = getLabelRank(part);
-                if (rank > info.labelRank) {
-                    info.labelRank = rank;
-                }
+            } catch (NumberFormatException ignored) {
+                // Ignore non-numeric parts
             }
         }
 
         return info;
-    }
-
-    /**
-     * Gets label rank for stability label. Higher value = more stable.
-     *
-     * @param label Label to evaluate (e.g., ALPHA, RELEASE).
-     * @return Rank index, or -1 if not found.
-     */
-    private static int getLabelRank(String label) {
-        for (int i = 0; i < LABEL_PRIORITY.size(); i++) {
-            if (label.equalsIgnoreCase(LABEL_PRIORITY.get(i))) {
-                return LABEL_PRIORITY.size() - 1 - i; // Higher index = more stable
-            }
-        }
-        return -1;
     }
 }
