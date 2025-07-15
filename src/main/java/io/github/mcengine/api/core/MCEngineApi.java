@@ -1,9 +1,9 @@
-package io.github.mcengine.api.mcengine;
+package io.github.mcengine.api.core;
 
-import io.github.mcengine.api.mcengine.util.MCEngineApiUtilCommand;
-import io.github.mcengine.api.mcengine.util.MCEngineApiUtilListener;
-import io.github.mcengine.api.mcengine.util.MCEngineApiUtilExtension;
-import io.github.mcengine.api.mcengine.util.MCEngineApiUtilUpdate;
+import io.github.mcengine.api.core.util.MCEngineApiUtilCommand;
+import io.github.mcengine.api.core.util.MCEngineApiUtilListener;
+import io.github.mcengine.api.core.util.MCEngineApiUtilExtension;
+import io.github.mcengine.api.core.util.MCEngineApiUtilUpdate;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;

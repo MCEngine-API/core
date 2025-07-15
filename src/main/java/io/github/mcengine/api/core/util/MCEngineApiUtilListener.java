@@ -1,4 +1,4 @@
-package io.github.mcengine.api.mcengine.util;
+package io.github.mcengine.api.core.util;
 
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;

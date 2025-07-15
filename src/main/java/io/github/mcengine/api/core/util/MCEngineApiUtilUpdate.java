@@ -1,4 +1,4 @@
-package io.github.mcengine.api.mcengine.util;
+package io.github.mcengine.api.core.util;
 
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
