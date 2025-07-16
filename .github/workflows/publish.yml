@@ -11,4 +11,4 @@ jobs:
     with:
       repo-name: ${{ github.repository }}
     secrets:
-      GITHUB_TOKEN: ${{ secrets.USER_GITHUB_TOKEN }}
+      USER_GITHUB_TOKEN: ${{ secrets.USER_GITHUB_TOKEN }}
