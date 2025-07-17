@@ -13,4 +13,11 @@ public interface IMCEngineAddOn {
      * @param plugin The plugin instance providing context.
      */
     void onLoad(Plugin plugin);
+
+    /**
+     * Sets a unique ID for this AddOn instance.
+     *
+     * @param id The unique ID assigned by the engine.
+     */
+    void setId(String id);
 }

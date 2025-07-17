@@ -19,4 +19,11 @@ public interface IMCEngineAPI {
      * @param plugin The {@link Plugin} instance that is providing the context for this DLC module.
      */
     void onLoad(Plugin plugin);
+
+    /**
+     * Sets a unique ID for this API module.
+     *
+     * @param id The unique ID assigned by the engine.
+     */
+    void setId(String id);
 }
