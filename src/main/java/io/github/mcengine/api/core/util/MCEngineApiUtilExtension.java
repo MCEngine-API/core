@@ -57,7 +57,8 @@ public class MCEngineApiUtilExtension {
 
     /**
      * Loads extensions (AddOns or DLCs) from the specified folder (recursively),
-     * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
+     * only loading classes that implement a specific interface and contain both
+     * "onLoad(Plugin)" and "setId(String)" methods.
      *
      * @param plugin     The Bukkit plugin instance.
      * @param className  The fully qualified name of the interface class to filter against. Must not be null.
@@ -141,10 +142,24 @@ public class MCEngineApiUtilExtension {
                             continue;
                         }
 
+                        Method setIdMethod;
+                        try {
+                            setIdMethod = clazz.getMethod("setId", String.class);
+                        } catch (NoSuchMethodException e) {
+                            logger.fine("[" + type + "] No setId(String) found in: " + targetClassName);
+                            continue;
+                        }
+
                         Object extensionInstance = clazz.getDeclaredConstructor().newInstance();
+
+                        // Generate and set unique ID
+                        String extensionId = UUID.randomUUID().toString();
+                        setId(extensionId);
+                        setIdMethod.invoke(extensionInstance, extensionId);
+
                         onLoadMethod.invoke(extensionInstance, plugin);
 
-                        logger.info("[" + type + "] Loaded: " + targetClassName);
+                        logger.info("[" + type + "] Loaded: " + targetClassName + " with ID: " + extensionId);
                         loaded = true;
                         break;
                     } catch (Throwable e) {
@@ -154,7 +169,7 @@ public class MCEngineApiUtilExtension {
                 }
 
                 if (!loaded) {
-                    logger.warning("[" + type + "] No valid onLoad(Plugin) class found in: " + file.getName());
+                    logger.warning("[" + type + "] No valid onLoad(Plugin) + setId(String) class found in: " + file.getName());
                 } else {
                     successfullyLoaded.add(file.getName());
                 }
