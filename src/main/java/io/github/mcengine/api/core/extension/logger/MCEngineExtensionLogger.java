@@ -21,7 +21,7 @@ public class MCEngineExtensionLogger {
      * @param name         The specific component name (e.g., AddOn name).
      */
     public MCEngineExtensionLogger(Plugin plugin, String contextLabel, String name) {
-        this.logger = Logger.getLogger(plugin.getLogger().getName() + " [" + contextLabel + "] [" + name + "]");
+        this.logger = Logger.getLogger(plugin.getLogger() + "[" + contextLabel + "] [" + name + "]");
     }
 
     /**
