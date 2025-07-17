@@ -20,11 +20,13 @@ public class MCEngineApiUtilExtension {
 
     /**
      * Keeps track of loaded AddOn/DLC filenames per folder name.
+     * The key is the folder name and the value is a list of successfully loaded JAR filenames.
      */
     private static final Map<String, List<String>> loadedExtensions = new HashMap<>();
 
     /**
      * Set of all registered extension IDs.
+     * Ensures all extension IDs are unique and not reused.
      */
     private static final Set<String> extensionIds = new HashSet<>();
 
@@ -53,6 +55,15 @@ public class MCEngineApiUtilExtension {
         return new ArrayList<>(extensionIds);
     }
 
+    /**
+     * Loads extensions (AddOns or DLCs) from the specified folder (recursively),
+     * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
+     *
+     * @param plugin     The Bukkit plugin instance.
+     * @param className  The fully qualified name of the interface class to filter against. Must not be null.
+     * @param folderName The folder name (relative to the plugin data folder).
+     * @param type       The extension type label (e.g., "AddOn", "DLC").
+     */
     public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
         Logger logger = plugin.getLogger();
 
@@ -157,6 +168,12 @@ public class MCEngineApiUtilExtension {
         loadedExtensions.put(folderName, successfullyLoaded);
     }
 
+    /**
+     * Recursively collects all .jar files under the given folder and its subfolders.
+     *
+     * @param folder   The folder to search in.
+     * @param jarFiles The list to append found .jar files to.
+     */
     private static void collectJarFilesRecursive(File folder, List<File> jarFiles) {
         File[] files = folder.listFiles();
         if (files == null) return;
