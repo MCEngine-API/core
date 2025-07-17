@@ -18,18 +18,41 @@ import java.util.logging.Logger;
  */
 public class MCEngineApiUtilExtension {
 
-    // Keeps track of loaded AddOn/DLC filenames per folder name
+    /**
+     * Keeps track of loaded AddOn/DLC filenames per folder name.
+     */
     private static final Map<String, List<String>> loadedExtensions = new HashMap<>();
 
     /**
-     * Loads extensions (AddOns or DLCs) from the specified folder (recursively),
-     * only loading classes that implement a specific interface and contain an "onLoad(Plugin)" method.
-     *
-     * @param plugin     The Bukkit plugin instance.
-     * @param className  The fully qualified name of the interface class to filter against. Must not be null.
-     * @param folderName The folder name (relative to the plugin data folder).
-     * @param type       The extension type label (e.g., "AddOn", "DLC").
+     * Set of all registered extension IDs.
      */
+    private static final Set<String> extensionIds = new HashSet<>();
+
+    /**
+     * Sets the current extension ID. Must be unique and not null.
+     *
+     * @param id The extension ID to register.
+     * @throws IllegalArgumentException if the ID is null or already used.
+     */
+    public static void setId(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Extension ID must not be null.");
+        }
+        if (extensionIds.contains(id)) {
+            throw new IllegalArgumentException("Extension ID already exists: " + id);
+        }
+        extensionIds.add(id);
+    }
+
+    /**
+     * Returns a list of all registered extension IDs.
+     *
+     * @return List of all extension IDs.
+     */
+    public static List<String> getAllId() {
+        return new ArrayList<>(extensionIds);
+    }
+
     public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
         Logger logger = plugin.getLogger();
 
@@ -134,12 +157,6 @@ public class MCEngineApiUtilExtension {
         loadedExtensions.put(folderName, successfullyLoaded);
     }
 
-    /**
-     * Recursively collects all .jar files under the given folder and subfolders.
-     *
-     * @param folder   The folder to search in.
-     * @param jarFiles The list to append found .jar files to.
-     */
     private static void collectJarFilesRecursive(File folder, List<File> jarFiles) {
         File[] files = folder.listFiles();
         if (files == null) return;

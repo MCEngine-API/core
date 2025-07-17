@@ -104,4 +104,23 @@ public class MCEngineApi {
     public static boolean handleExtensionList(Player player, Plugin plugin, String type) {
         return MCEngineApiUtilCommand.handleExtensionList(player, plugin, type);
     }
+
+    /**
+     * Sets a unique, non-null ID for an extension.
+     *
+     * @param id The extension ID to set.
+     * @throws IllegalArgumentException if ID is null or already exists.
+     */
+    public static void setId(String id) {
+        MCEngineApiUtilExtension.setId(id);
+    }
+
+    /**
+     * Returns a list of all registered extension IDs.
+     *
+     * @return list of all extension IDs.
+     */
+    public static List<String> getAllId() {
+        return MCEngineApiUtilExtension.getAllId();
+    }
 }
