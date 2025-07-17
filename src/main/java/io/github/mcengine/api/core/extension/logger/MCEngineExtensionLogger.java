@@ -5,53 +5,50 @@ import org.bukkit.plugin.Plugin;
 import java.util.logging.Logger;
 
 /**
- * General-purpose logger for MCEngine extensions, supporting dynamic prefixing
+ * General-purpose logger for MCEngine extensions, supporting dynamic labeling
  * for different contexts like AddOns, APIs, or others.
  */
 public class MCEngineExtensionLogger {
 
+    /** The underlying Java logger with contextual labeling. */
     private final Logger logger;
-    private final String contextLabel;
-    private final String name;
 
     /**
      * Constructs a new extension logger with a specified label and name.
      *
      * @param plugin       The plugin instance to retrieve the logger from.
-     * @param contextLabel The context label to prefix (e.g., "API", "AddOn").
-     * @param name         The identifier name to include (e.g., AddOn name, API name).
+     * @param contextLabel The context label to identify the type of component.
+     * @param name         The specific component name (e.g., AddOn name).
      */
     public MCEngineExtensionLogger(Plugin plugin, String contextLabel, String name) {
-        this.logger = plugin.getLogger();
-        this.contextLabel = contextLabel;
-        this.name = name;
+        this.logger = Logger.getLogger(plugin.getLogger().getName() + " [" + contextLabel + "] [" + name + "]");
     }
 
     /**
-     * Logs an informational message with contextual prefix.
+     * Logs an informational message with contextual label.
      *
      * @param message The message to log.
      */
     public void info(String message) {
-        logger.info(getPrefix() + message);
+        logger.info(message);
     }
 
     /**
-     * Logs a warning message with contextual prefix.
+     * Logs a warning message with contextual label.
      *
      * @param message The message to log.
      */
     public void warning(String message) {
-        logger.warning(getPrefix() + message);
+        logger.warning(message);
     }
 
     /**
-     * Logs a severe error message with contextual prefix.
+     * Logs a severe error message with contextual label.
      *
      * @param message The message to log.
      */
     public void severe(String message) {
-        logger.severe(getPrefix() + message);
+        logger.severe(message);
     }
 
     /**
@@ -61,9 +58,5 @@ public class MCEngineExtensionLogger {
      */
     public Logger getLogger() {
         return logger;
-    }
-
-    private String getPrefix() {
-        return "[" + contextLabel + "] [" + name + "] ";
     }
 }
