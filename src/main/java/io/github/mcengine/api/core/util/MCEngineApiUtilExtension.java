@@ -212,4 +212,68 @@ public class MCEngineApiUtilExtension {
     public static List<String> getLoadedExtensionFileNames(Plugin plugin, String folderName) {
         return loadedExtensions.getOrDefault(folderName, Collections.emptyList());
     }
+
+    /**
+     * Invokes the "onDisload" method on all previously loaded extensions from a given folder.
+     *
+     * @param plugin     The Bukkit plugin instance.
+     * @param folderName The folder name from which extensions were previously loaded.
+     * @param type       The extension type label (e.g., "AddOn", "DLC").
+     */
+    public static void onDisload(Plugin plugin, String folderName, String type) {
+        Logger logger = plugin.getLogger();
+        List<String> jars = loadedExtensions.get(folderName);
+        if (jars == null || jars.isEmpty()) {
+            logger.info("[" + type + "] No previously loaded extensions to disload.");
+            return;
+        }
+
+        File rootFolder = new File(plugin.getDataFolder(), "extensions/" + folderName);
+        for (String fileName : jars) {
+            File jarFile = new File(rootFolder, fileName);
+            if (!jarFile.exists()) continue;
+
+            try (
+                URLClassLoader classLoader = new URLClassLoader(
+                    new URL[]{jarFile.toURI().toURL()},
+                    plugin.getClass().getClassLoader()
+                );
+                JarFile jar = new JarFile(jarFile)
+            ) {
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    String name = entry.getName();
+
+                    if (!name.endsWith(".class") || name.contains("$")) continue;
+                    String targetClassName = name.replace("/", ".").replace(".class", "");
+
+                    try {
+                        Class<?> clazz = classLoader.loadClass(targetClassName);
+                        if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) continue;
+
+                        Method onDisloadMethod;
+                        try {
+                            onDisloadMethod = clazz.getMethod("onDisload", Plugin.class);
+                        } catch (NoSuchMethodException e) {
+                            continue;
+                        }
+
+                        Object extensionInstance = clazz.getDeclaredConstructor().newInstance();
+                        onDisloadMethod.invoke(extensionInstance, plugin);
+                        logger.info("[" + type + "] Disloaded: " + targetClassName);
+                        break;
+                    } catch (Throwable e) {
+                        logger.warning("[" + type + "] Failed to disload class: " + targetClassName);
+                        e.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                logger.warning("[" + type + "] Error disloading " + type + " JAR: " + jarFile.getName());
+                e.printStackTrace();
+            }
+        }
+
+        loadedExtensions.remove(folderName);
+    }
 }
