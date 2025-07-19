@@ -214,7 +214,7 @@ public class MCEngineApiUtilExtension {
     }
 
     /**
-     * Invokes the "onDisload" method on all previously loaded extensions from a given folder.
+     * Invokes the "onDisload(Plugin)" method on all previously loaded extensions from a given folder.
      *
      * @param plugin     The Bukkit plugin instance.
      * @param folderName The folder name from which extensions were previously loaded.
