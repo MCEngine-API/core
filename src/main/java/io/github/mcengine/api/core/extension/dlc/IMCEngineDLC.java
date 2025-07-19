@@ -15,6 +15,15 @@ public interface IMCEngineDLC {
     void onLoad(Plugin plugin);
 
     /**
+     * Called when the DLC is unloaded or disabled by the engine.
+     * <p>
+     * Use this method to clean up resources or state that should not persist after disabling.
+     *
+     * @param plugin The plugin instance providing context.
+     */
+    void onDisload(Plugin plugin);
+
+    /**
      * Sets a unique ID for this DLC instance.
      *
      * @param id The unique ID assigned by the engine.
