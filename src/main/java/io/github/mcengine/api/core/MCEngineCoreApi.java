@@ -4,11 +4,13 @@ import io.github.mcengine.api.core.util.MCEngineCoreApiUtilCommand;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilUpdate;
+import io.github.mcengine.api.core.util.MCEngineCoreApiConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -122,5 +124,81 @@ public class MCEngineCoreApi {
      */
     public static List<String> getAllId() {
         return MCEngineCoreApiUtilExtension.getAllId();
+    }
+
+    // ----------------------
+    // Config Access Methods
+    // ----------------------
+
+    /**
+     * Retrieves a String value from the configuration.
+     *
+     * @param path     the parent path key (e.g., "tools.threadpool")
+     * @param variable the specific variable name (e.g., "enable")
+     * @param config   the configuration map
+     * @return the String value, or {@code null} if not found or not a String
+     */
+    public static String getConfigString(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigString(path, variable, config);
+    }
+
+    /**
+     * Retrieves a boolean value from the configuration.
+     *
+     * @param path     the parent path key
+     * @param variable the variable name
+     * @param config   the configuration map
+     * @return the boolean value, or {@code false} if not found or not a boolean
+     */
+    public static boolean getConfigBoolean(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigBoolean(path, variable, config);
+    }
+
+    /**
+     * Retrieves an int value from the configuration.
+     *
+     * @param path     the parent path key
+     * @param variable the variable name
+     * @param config   the configuration map
+     * @return the int value, or {@code 0} if not found or not a number
+     */
+    public static int getConfigInt(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigInt(path, variable, config);
+    }
+
+    /**
+     * Retrieves a long value from the configuration.
+     *
+     * @param path     the parent path key
+     * @param variable the variable name
+     * @param config   the configuration map
+     * @return the long value, or {@code 0L} if not found or not a number
+     */
+    public static long getConfigLong(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigLong(path, variable, config);
+    }
+
+    /**
+     * Retrieves a double value from the configuration.
+     *
+     * @param path     the parent path key
+     * @param variable the variable name
+     * @param config   the configuration map
+     * @return the double value, or {@code 0.0} if not found or not a number
+     */
+    public static double getConfigDouble(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigDouble(path, variable, config);
+    }
+
+    /**
+     * Retrieves a generic Object value from the configuration.
+     *
+     * @param path     the parent path key
+     * @param variable the variable name
+     * @param config   the configuration map
+     * @return the Object value, or {@code null} if not found
+     */
+    public static Object getConfigObject(String path, String variable, Map<String, Object> config) {
+        return MCEngineCoreApiConfiguration.getConfigObject(path, variable, config);
     }
 }
