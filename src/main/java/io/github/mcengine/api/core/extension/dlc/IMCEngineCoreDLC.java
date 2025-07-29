@@ -5,7 +5,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * Interface for DLC modules that can be dynamically loaded.
  */
-public interface IMCEngineDLC {
+public interface IMCEngineCoreDLC {
 
     /**
      * Called when the DLC is loaded by the engine.

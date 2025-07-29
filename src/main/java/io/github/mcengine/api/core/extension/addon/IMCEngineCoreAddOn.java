@@ -5,7 +5,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * Interface for AddOn modules that can be dynamically loaded.
  */
-public interface IMCEngineAddOn {
+public interface IMCEngineCoreAddOn {
 
     /**
      * Called when the AddOn is loaded by the engine.

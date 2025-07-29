@@ -8,7 +8,7 @@ import org.bukkit.plugin.Plugin;
  * Implement this interface to create a plugin extension that hooks into the core system
  * provided by the MCEngine. The implementation should register its functionality within the {@link #onLoad(Plugin)} method.
  */
-public interface IMCEngineAPI {
+public interface IMCEngineCoreAPI {
 
     /**
      * Called when the API module is loaded by the engine.
