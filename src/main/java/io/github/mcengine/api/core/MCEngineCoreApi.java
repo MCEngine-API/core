@@ -1,9 +1,9 @@
 package io.github.mcengine.api.core;
 
-import io.github.mcengine.api.core.util.MCEngineApiUtilCommand;
-import io.github.mcengine.api.core.util.MCEngineApiUtilListener;
-import io.github.mcengine.api.core.util.MCEngineApiUtilExtension;
-import io.github.mcengine.api.core.util.MCEngineApiUtilUpdate;
+import io.github.mcengine.api.core.util.MCEngineCoreApiUtilCommand;
+import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
+import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
+import io.github.mcengine.api.core.util.MCEngineCoreApiUtilUpdate;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Central API class for MCEngine to provide simplified access to
  * dynamic command registration, event listener registration, extension loading, and update checking.
  */
-public class MCEngineApi {
+public class MCEngineCoreApi {
 
     /**
      * Registers a command executor dynamically by class name.
@@ -25,7 +25,7 @@ public class MCEngineApi {
      * @param className the fully qualified class name of the CommandExecutor
      */
     public static void registerCommand(JavaPlugin plugin, String cmd, String className) {
-        MCEngineApiUtilCommand.registerCommand(plugin, cmd, className);
+        MCEngineCoreApiUtilCommand.registerCommand(plugin, cmd, className);
     }
 
     /**
@@ -35,7 +35,7 @@ public class MCEngineApi {
      * @param className the fully qualified class name of the Listener
      */
     public static void registerListener(Plugin plugin, String className) {
-        MCEngineApiUtilListener.registerListener(plugin, className);
+        MCEngineCoreApiUtilListener.registerListener(plugin, className);
     }
 
     /**
@@ -48,7 +48,7 @@ public class MCEngineApi {
      * @param type       the label used for logging (e.g., "AddOn", "DLC")
      */
     public static void loadExtensions(Plugin plugin, String className, String folderName, String type) {
-        MCEngineApiUtilExtension.loadExtensions(plugin, className, folderName, type);
+        MCEngineCoreApiUtilExtension.loadExtensions(plugin, className, folderName, type);
     }
 
     /**
@@ -59,7 +59,7 @@ public class MCEngineApi {
      * @return list of loaded JAR filenames
      */
     public static List<String> getLoadedExtensionFileNames(Plugin plugin, String folderName) {
-        return MCEngineApiUtilExtension.getLoadedExtensionFileNames(plugin, folderName);
+        return MCEngineCoreApiUtilExtension.getLoadedExtensionFileNames(plugin, folderName);
     }
 
     /**
@@ -74,7 +74,7 @@ public class MCEngineApi {
      * @param token       optional GitHub/GitLab token (can be null or "null")
      */
     public static void checkUpdate(Plugin plugin, Logger logger, String gitPlatform, String org, String repository, String token) {
-        MCEngineApiUtilUpdate.checkUpdate(plugin, logger, gitPlatform, org, repository, token);
+        MCEngineCoreApiUtilUpdate.checkUpdate(plugin, logger, gitPlatform, org, repository, token);
     }
 
     /**
@@ -90,7 +90,7 @@ public class MCEngineApi {
      * @param token       optional GitHub/GitLab token (can be null or "null")
      */
     public static void checkUpdate(Plugin plugin, Logger logger, String prefix, String gitPlatform, String org, String repository, String token) {
-        MCEngineApiUtilUpdate.checkUpdate(plugin, logger, prefix, gitPlatform, org, repository, token);
+        MCEngineCoreApiUtilUpdate.checkUpdate(plugin, logger, prefix, gitPlatform, org, repository, token);
     }
 
     /**
@@ -102,7 +102,7 @@ public class MCEngineApi {
      * @return true after displaying the list.
      */
     public static boolean handleExtensionList(Player player, Plugin plugin, String type) {
-        return MCEngineApiUtilCommand.handleExtensionList(player, plugin, type);
+        return MCEngineCoreApiUtilCommand.handleExtensionList(player, plugin, type);
     }
 
     /**
@@ -112,7 +112,7 @@ public class MCEngineApi {
      * @throws IllegalArgumentException if ID is null or already exists.
      */
     public static void setId(String id) {
-        MCEngineApiUtilExtension.setId(id);
+        MCEngineCoreApiUtilExtension.setId(id);
     }
 
     /**
@@ -121,6 +121,6 @@ public class MCEngineApi {
      * @return list of all extension IDs.
      */
     public static List<String> getAllId() {
-        return MCEngineApiUtilExtension.getAllId();
+        return MCEngineCoreApiUtilExtension.getAllId();
     }
 }

@@ -13,7 +13,7 @@ import org.bukkit.plugin.Plugin;
  * This API allows plugins to register commands with associated
  * {@link CommandExecutor} classes at runtime using reflection.
  */
-public class MCEngineApiUtilCommand {
+public class MCEngineCoreApiUtilCommand {
 
     /**
      * Registers a command by dynamically loading a class that implements {@link CommandExecutor}.
@@ -60,7 +60,7 @@ public class MCEngineApiUtilCommand {
     public static boolean handleExtensionList(Player player, Plugin plugin, String type) {
         type = type.toLowerCase();
         String folder = type.equals("addon") ? "addons" : "dlcs";
-        List<String> extensions = MCEngineApiUtilExtension.getLoadedExtensionFileNames(plugin, folder);
+        List<String> extensions = MCEngineCoreApiUtilExtension.getLoadedExtensionFileNames(plugin, folder);
 
         player.sendMessage("§eLoaded " + type + "s:");
         if (extensions.isEmpty()) {

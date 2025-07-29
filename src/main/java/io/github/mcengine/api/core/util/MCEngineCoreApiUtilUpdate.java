@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Utility class for checking plugin updates from GitHub or GitLab repositories.
  */
-public class MCEngineApiUtilUpdate {
+public class MCEngineCoreApiUtilUpdate {
 
     /**
      * Checks for updates for core plugins.

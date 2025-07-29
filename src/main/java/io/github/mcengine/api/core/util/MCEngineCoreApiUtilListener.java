@@ -10,7 +10,7 @@ import org.bukkit.plugin.PluginManager;
  * This API allows plugins to register Bukkit {@link Listener} classes at runtime
  * using reflection.
  */
-public class MCEngineApiUtilListener {
+public class MCEngineCoreApiUtilListener {
 
     /**
      * Registers an event listener by dynamically loading a class that implements {@link Listener}.

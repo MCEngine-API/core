@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * Utility class for loading AddOns or DLCs from JAR files.
  * Supports recursive directory search and class loading.
  */
-public class MCEngineApiUtilExtension {
+public class MCEngineCoreApiUtilExtension {
 
     /**
      * Keeps track of loaded AddOn/DLC filenames per folder name.

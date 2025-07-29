@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * <p>The configuration should be a hierarchical map (e.g., parsed from a YAML or JSON file).
  */
-public class MCEngineApiConfiguration {
+public class MCEngineCoreApiConfiguration {
 
     /**
      * Retrieves a string value from the configuration.
