@@ -5,6 +5,7 @@ import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilUpdate;
 import io.github.mcengine.api.core.util.MCEngineCoreApiConfiguration;
+import io.github.mcengine.api.core.util.MCEngineCoreApiLicense;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
@@ -200,5 +201,15 @@ public class MCEngineCoreApi {
      */
     public static Object getConfigObject(String path, String variable, Map<String, Object> config) {
         return MCEngineCoreApiConfiguration.getConfigObject(path, variable, config);
+    }
+
+    /**
+     * Verifies a license key against the remote license server.
+     *
+     * @param license the license string to verify
+     * @return true if the license is valid, false otherwise
+     */
+    public static boolean checkLicense(String license) {
+        return MCEngineCoreApiLicense.checkLicense(license);
     }
 }
