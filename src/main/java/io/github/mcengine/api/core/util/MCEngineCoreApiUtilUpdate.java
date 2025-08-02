@@ -130,7 +130,7 @@ public class MCEngineCoreApiUtilUpdate {
                 boolean updateAvailable = isUpdateAvailable(currentVersion, latestVersion);
 
                 if (updateAvailable) {
-                    logger.info(prefix + "new update is available!");
+                    logger.info(prefix + "A new update is available!");
                     logger.info(prefix + "Current version: " + currentVersion + " >> Latest: " + latestVersion);
                     logger.info(prefix + "Download: " + downloadUrl);
                 } else {
@@ -145,7 +145,7 @@ public class MCEngineCoreApiUtilUpdate {
 
     /**
      * Compares current and latest version to determine if an update is needed.
-     * Version format must be in yyyy.m.m or yyyy.m.m-dd
+     * Version format must be in yyyy.m.m (release) or yyyy.m.m-dd (testing).
      *
      * @param currentVersion Current version string.
      * @param latestVersion  Latest version string.
