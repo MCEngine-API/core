@@ -9,12 +9,29 @@ import java.net.InetAddress;
 
 import org.json.JSONObject;
 
+/**
+ * Utility class for verifying software licenses with the MCEngine Core API.
+ */
 public class MCEngineCoreApiLicense {
 
+    /**
+     * The URL of the license server used for verification.
+     */
     private static final String LICENSE_SERVER_URL = "https://example.com/api/verify";
 
+    /**
+     * Checks the validity of a given license key against the remote license server.
+     *
+     * @param license the license key to verify
+     * @return {@code true} if the license is valid and not marked as free; {@code false} otherwise
+     */
     public static boolean checkLicense(String license) {
         try {
+            // Reject 'free' licenses
+            if ("free".equalsIgnoreCase(license)) {
+                return false;
+            }
+
             // Get local IP address
             String serverIp = InetAddress.getLocalHost().getHostAddress();
 
