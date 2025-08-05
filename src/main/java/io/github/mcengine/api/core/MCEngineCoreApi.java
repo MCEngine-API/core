@@ -21,27 +21,6 @@ import java.util.logging.Logger;
 public class MCEngineCoreApi {
 
     /**
-     * Registers a command executor dynamically by class name.
-     *
-     * @param plugin    the JavaPlugin instance
-     * @param cmd       the command name defined in plugin.yml
-     * @param className the fully qualified class name of the CommandExecutor
-     */
-    public static void registerCommand(JavaPlugin plugin, String cmd, String className) {
-        MCEngineCoreApiUtilCommand.registerCommand(plugin, cmd, className);
-    }
-
-    /**
-     * Registers an event listener dynamically by class name.
-     *
-     * @param plugin    the plugin instance
-     * @param className the fully qualified class name of the Listener
-     */
-    public static void registerListener(Plugin plugin, String className) {
-        MCEngineCoreApiUtilListener.registerListener(plugin, className);
-    }
-
-    /**
      * Loads external AddOn or DLC extensions with filtering by class interface name.
      * Only classes that implement the specified interface and provide onLoad(Plugin) are invoked.
      *
