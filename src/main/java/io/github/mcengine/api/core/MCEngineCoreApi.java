@@ -21,6 +21,62 @@ import java.util.logging.Logger;
 public class MCEngineCoreApi {
 
     /**
+     * Registers a command namespace (e.g. "plugin1") for a plugin to own.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  unique namespace for commands
+     */
+    public static void registerNamespace(MCEngineDispatcher dispatcher, String namespace) {
+        dispatcher.registerNamespace(namespace);
+    }
+
+    /**
+     * Binds a Bukkit command (like /example1) to the namespace dispatcher.
+     *
+     * @param dispatcher       the command dispatcher instance
+     * @param namespace        namespace name
+     * @param commandExecutor  fallback executor
+     */
+    public static void bindNamespaceToCommand(MCEngineDispatcher dispatcher, String namespace, CommandExecutor commandExecutor) {
+        dispatcher.bindNamespaceToCommand(namespace, commandExecutor);
+    }
+
+    /**
+     * Registers a subcommand (e.g. test1, test2) under a namespace.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  the target namespace
+     * @param name       subcommand name
+     * @param executor   the logic to run
+     */
+    public static void registerSubCommand(MCEngineDispatcher dispatcher, String namespace, String name, CommandExecutor executor) {
+        dispatcher.registerSubCommand(namespace, name, executor);
+    }
+
+    /**
+     * Registers a TabCompleter for a subcommand under a namespace.
+     *
+     * @param dispatcher   the command dispatcher instance
+     * @param namespace    the command namespace
+     * @param subcommand   the subcommand label
+     * @param tabCompleter the tab completer instance
+     */
+    public static void registerSubTabCompleter(MCEngineDispatcher dispatcher, String namespace, String subcommand, TabCompleter tabCompleter) {
+        dispatcher.registerSubTabCompleter(namespace, subcommand, tabCompleter);
+    }
+
+    /**
+     * Returns the Bukkit-compatible executor for a command namespace.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  the namespace
+     * @return executor instance
+     */
+    public static CommandExecutor getDispatcher(MCEngineDispatcher dispatcher, String namespace) {
+        return dispatcher.getDispatcher(namespace);
+    }
+
+    /**
      * Loads external AddOn or DLC extensions with filtering by class interface name.
      * Only classes that implement the specified interface and provide onLoad(Plugin) are invoked.
      *
