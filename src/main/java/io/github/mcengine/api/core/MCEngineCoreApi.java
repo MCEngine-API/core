@@ -30,7 +30,7 @@ public class MCEngineCoreApi {
      * @param dispatcher the command dispatcher instance
      * @param namespace  unique namespace for commands
      */
-    public static void registerNamespace(MCEngineDispatcher dispatcher, String namespace) {
+    public static void registerNamespace(MCEngineCoreApiDispatcher dispatcher, String namespace) {
         dispatcher.registerNamespace(namespace);
     }
 
@@ -41,7 +41,7 @@ public class MCEngineCoreApi {
      * @param namespace        namespace name
      * @param commandExecutor  fallback executor
      */
-    public static void bindNamespaceToCommand(MCEngineDispatcher dispatcher, String namespace, CommandExecutor commandExecutor) {
+    public static void bindNamespaceToCommand(MCEngineCoreApiDispatcher dispatcher, String namespace, CommandExecutor commandExecutor) {
         dispatcher.bindNamespaceToCommand(namespace, commandExecutor);
     }
 
@@ -53,7 +53,7 @@ public class MCEngineCoreApi {
      * @param name       subcommand name
      * @param executor   the logic to run
      */
-    public static void registerSubCommand(MCEngineDispatcher dispatcher, String namespace, String name, CommandExecutor executor) {
+    public static void registerSubCommand(MCEngineCoreApiDispatcher dispatcher, String namespace, String name, CommandExecutor executor) {
         dispatcher.registerSubCommand(namespace, name, executor);
     }
 
@@ -65,7 +65,7 @@ public class MCEngineCoreApi {
      * @param subcommand   the subcommand label
      * @param tabCompleter the tab completer instance
      */
-    public static void registerSubTabCompleter(MCEngineDispatcher dispatcher, String namespace, String subcommand, TabCompleter tabCompleter) {
+    public static void registerSubTabCompleter(MCEngineCoreApiDispatcher dispatcher, String namespace, String subcommand, TabCompleter tabCompleter) {
         dispatcher.registerSubTabCompleter(namespace, subcommand, tabCompleter);
     }
 
@@ -76,7 +76,7 @@ public class MCEngineCoreApi {
      * @param namespace  the namespace
      * @return executor instance
      */
-    public static CommandExecutor getDispatcher(MCEngineDispatcher dispatcher, String namespace) {
+    public static CommandExecutor getDispatcher(MCEngineCoreApiDispatcher dispatcher, String namespace) {
         return dispatcher.getDispatcher(namespace);
     }
 
