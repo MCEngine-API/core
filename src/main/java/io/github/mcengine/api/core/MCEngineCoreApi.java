@@ -1,11 +1,15 @@
 package io.github.mcengine.api.core;
 
+import io.github.mcengine.api.core.util.MCEngineCoreApiDispatcher;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilCommand;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilUpdate;
 import io.github.mcengine.api.core.util.MCEngineCoreApiConfiguration;
 import io.github.mcengine.api.core.util.MCEngineCoreApiLicense;
+
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
@@ -19,6 +23,62 @@ import java.util.logging.Logger;
  * dynamic command registration, event listener registration, extension loading, and update checking.
  */
 public class MCEngineCoreApi {
+
+    /**
+     * Registers a command namespace (e.g. "plugin1") for a plugin to own.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  unique namespace for commands
+     */
+    public static void registerNamespace(MCEngineCoreApiDispatcher dispatcher, String namespace) {
+        dispatcher.registerNamespace(namespace);
+    }
+
+    /**
+     * Binds a Bukkit command (like /example1) to the namespace dispatcher.
+     *
+     * @param dispatcher       the command dispatcher instance
+     * @param namespace        namespace name
+     * @param commandExecutor  fallback executor
+     */
+    public static void bindNamespaceToCommand(MCEngineCoreApiDispatcher dispatcher, String namespace, CommandExecutor commandExecutor) {
+        dispatcher.bindNamespaceToCommand(namespace, commandExecutor);
+    }
+
+    /**
+     * Registers a subcommand (e.g. test1, test2) under a namespace.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  the target namespace
+     * @param name       subcommand name
+     * @param executor   the logic to run
+     */
+    public static void registerSubCommand(MCEngineCoreApiDispatcher dispatcher, String namespace, String name, CommandExecutor executor) {
+        dispatcher.registerSubCommand(namespace, name, executor);
+    }
+
+    /**
+     * Registers a TabCompleter for a subcommand under a namespace.
+     *
+     * @param dispatcher   the command dispatcher instance
+     * @param namespace    the command namespace
+     * @param subcommand   the subcommand label
+     * @param tabCompleter the tab completer instance
+     */
+    public static void registerSubTabCompleter(MCEngineCoreApiDispatcher dispatcher, String namespace, String subcommand, TabCompleter tabCompleter) {
+        dispatcher.registerSubTabCompleter(namespace, subcommand, tabCompleter);
+    }
+
+    /**
+     * Returns the Bukkit-compatible executor for a command namespace.
+     *
+     * @param dispatcher the command dispatcher instance
+     * @param namespace  the namespace
+     * @return executor instance
+     */
+    public static CommandExecutor getDispatcher(MCEngineCoreApiDispatcher dispatcher, String namespace) {
+        return dispatcher.getDispatcher(namespace);
+    }
 
     /**
      * Loads external AddOn or DLC extensions with filtering by class interface name.
