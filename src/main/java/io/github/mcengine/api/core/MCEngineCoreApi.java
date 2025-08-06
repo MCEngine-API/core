@@ -1,6 +1,6 @@
 package io.github.mcengine.api.core;
 
-import io.github.mcengine.api.core.command.MCEngineDispatcher;
+import io.github.mcengine.api.core.util.MCEngineCoreApiDispatcher;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilCommand;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
