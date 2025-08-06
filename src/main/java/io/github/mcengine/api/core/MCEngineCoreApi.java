@@ -1,11 +1,15 @@
 package io.github.mcengine.api.core;
 
+import io.github.mcengine.api.core.command.MCEngineDispatcher;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilCommand;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilListener;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilExtension;
 import io.github.mcengine.api.core.util.MCEngineCoreApiUtilUpdate;
 import io.github.mcengine.api.core.util.MCEngineCoreApiConfiguration;
 import io.github.mcengine.api.core.util.MCEngineCoreApiLicense;
+
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
