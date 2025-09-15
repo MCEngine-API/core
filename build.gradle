@@ -52,7 +52,7 @@ repositories {
 
 dependencies {
     // Add your dependencies here
-    compileOnly 'com.google.code.gson:gson:2.13.1'
+    compileOnly 'com.google.code.gson:gson:2.13.2'
     compileOnly 'org.json:json:20250517'
     compileOnly 'org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT'
 }
